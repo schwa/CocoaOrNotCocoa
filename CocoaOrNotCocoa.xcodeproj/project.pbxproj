@@ -3,20 +3,17 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 50;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		454EAB2225D8378A009AF5D9 /* Everything in Frameworks */ = {isa = PBXBuildFile; productRef = 454EAB2125D8378A009AF5D9 /* Everything */; };
 		4557F14D25CB619D00B978CA /* CocoaOrNotCocoaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4557F14C25CB619D00B978CA /* CocoaOrNotCocoaApp.swift */; };
 		4557F14F25CB619D00B978CA /* OldContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4557F14E25CB619D00B978CA /* OldContentView.swift */; };
 		4557F15125CB619E00B978CA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4557F15025CB619E00B978CA /* Assets.xcassets */; };
 		4557F15425CB619E00B978CA /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4557F15325CB619E00B978CA /* Preview Assets.xcassets */; };
 		4557F15E25CB61BB00B978CA /* CocoaOrNotCocoa.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 4557F15D25CB61BB00B978CA /* CocoaOrNotCocoa.mlmodel */; };
-		45CF53EA25D8705700EA35B6 /* TimelaneCombine in Frameworks */ = {isa = PBXBuildFile; productRef = 45CF53E925D8705700EA35B6 /* TimelaneCombine */; };
 		45E39C2725D75AA000B83DA2 /* TrainingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E39C2625D75AA000B83DA2 /* TrainingModel.swift */; };
 		45E39C2B25D762DD00B83DA2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E39C2A25D762DD00B83DA2 /* ContentView.swift */; };
-		45E6792325CC76A0006208DF /* Scratch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E6792225CC76A0006208DF /* Scratch.swift */; };
 		45EA38CE25CB7C8E007EAFDB /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45EA38CD25CB7C8E007EAFDB /* Model.swift */; };
 /* End PBXBuildFile section */
 
@@ -31,7 +28,6 @@
 		4557F15D25CB61BB00B978CA /* CocoaOrNotCocoa.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = CocoaOrNotCocoa.mlmodel; sourceTree = "<group>"; };
 		45E39C2625D75AA000B83DA2 /* TrainingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingModel.swift; sourceTree = "<group>"; };
 		45E39C2A25D762DD00B83DA2 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		45E6792225CC76A0006208DF /* Scratch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scratch.swift; sourceTree = "<group>"; };
 		45EA38CD25CB7C8E007EAFDB /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -40,8 +36,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				45CF53EA25D8705700EA35B6 /* TimelaneCombine in Frameworks */,
-				454EAB2225D8378A009AF5D9 /* Everything in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,7 +66,6 @@
 				4557F14E25CB619D00B978CA /* OldContentView.swift */,
 				45EA38CD25CB7C8E007EAFDB /* Model.swift */,
 				45E39C2625D75AA000B83DA2 /* TrainingModel.swift */,
-				45E6792225CC76A0006208DF /* Scratch.swift */,
 				4557F15025CB619E00B978CA /* Assets.xcassets */,
 				4557F15525CB619E00B978CA /* Info.plist */,
 				4557F15625CB619E00B978CA /* CocoaOrNotCocoa.entitlements */,
@@ -107,8 +100,6 @@
 			);
 			name = CocoaOrNotCocoa;
 			packageProductDependencies = (
-				454EAB2125D8378A009AF5D9 /* Everything */,
-				45CF53E925D8705700EA35B6 /* TimelaneCombine */,
 			);
 			productName = CocoaOrNotCocoa;
 			productReference = 4557F14925CB619D00B978CA /* CocoaOrNotCocoa.app */;
@@ -138,8 +129,6 @@
 			);
 			mainGroup = 4557F14025CB619D00B978CA;
 			packageReferences = (
-				454EAB2025D8378A009AF5D9 /* XCRemoteSwiftPackageReference "everything" */,
-				45CF53E825D8705700EA35B6 /* XCRemoteSwiftPackageReference "TimelaneCombine" */,
 			);
 			productRefGroup = 4557F14A25CB619D00B978CA /* Products */;
 			projectDirPath = "";
@@ -167,7 +156,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				45E6792325CC76A0006208DF /* Scratch.swift in Sources */,
 				45E39C2725D75AA000B83DA2 /* TrainingModel.swift in Sources */,
 				45E39C2B25D762DD00B83DA2 /* ContentView.swift in Sources */,
 				4557F14F25CB619D00B978CA /* OldContentView.swift in Sources */,
@@ -365,38 +353,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		454EAB2025D8378A009AF5D9 /* XCRemoteSwiftPackageReference "everything" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/schwa/everything.git";
-			requirement = {
-				branch = master;
-				kind = branch;
-			};
-		};
-		45CF53E825D8705700EA35B6 /* XCRemoteSwiftPackageReference "TimelaneCombine" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/icanzilb/TimelaneCombine";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.0.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		454EAB2125D8378A009AF5D9 /* Everything */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 454EAB2025D8378A009AF5D9 /* XCRemoteSwiftPackageReference "everything" */;
-			productName = Everything;
-		};
-		45CF53E925D8705700EA35B6 /* TimelaneCombine */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 45CF53E825D8705700EA35B6 /* XCRemoteSwiftPackageReference "TimelaneCombine" */;
-			productName = TimelaneCombine;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 4557F14125CB619D00B978CA /* Project object */;
 }

@@ -9,7 +9,7 @@ import SwiftUI
 import Photos
 import Combine
 import UniformTypeIdentifiers
-import Everything
+//import Everything
 
 struct ContentView: View {
 
@@ -27,8 +27,8 @@ struct ContentView: View {
         }
         Button("Export") {
 
-            if !FileManager().fileExists(atPath: "/Volumes/ramdisk") {
-                _ = try! makeRamDisk(size: 4 * 1024 * 1024 * 1024, name: "ramdisk")
+            if !FileManager().fileExists(atPath: "/tmp/Training") {
+                try! FileManager().createDirectory(atPath: "/tmp/Training", withIntermediateDirectories: true, attributes: nil)
             }
 
             let parentProgress = Progress(totalUnitCount: 2)
@@ -40,13 +40,13 @@ struct ContentView: View {
 
             let exporters = ["Cocoa"/*, "Not Cocoa"*/].map { title -> AnyPublisher<(PhotoLibrary.Asset, Result<URL, Error>), Error> in
                 let album = library.albums.first(where: { $0.title == title })
-                let url = URL(fileURLWithPath: "/Volumes/ramdisk/TrainingData/\(title)")
+                let url = URL(fileURLWithPath: "/tmp/TrainingData/\(title)")
                 try? FileManager().createDirectory(at: url, withIntermediateDirectories: true, attributes: nil)
                 let progress = Progress(totalUnitCount: Int64(album!.assets.count), parent: parentProgress, pendingUnitCount: 1)
-                return album!.export(url: url).handleEvents { _ in
+                return album!.export(url: url).handleEvents(receiveRequest:  { _ in
                     print("TICK")
                     progress.completedUnitCount += 1
-                }
+                })
                 .eraseToAnyPublisher()
             }
             Publishers.MergeMany(exporters)
@@ -91,7 +91,7 @@ class PhotoLibrary: ObservableObject {
 
         var cancellables: Set <AnyCancellable> = []
 
-        func export(url: URL, type: UTType = UTType.jpeg) -> AnyPublisher<(Asset, Result<URL, Error>), Error> {
+        func export(url: URL) -> AnyPublisher<(Asset, Result<URL, Error>), Error> {
             print("Assets \(assets.count)")
             return Publishers.Sequence(sequence: assets)
             .flatMap() { asset -> AnyPublisher<(Asset, Result<NSImage, Error>), Never> in
@@ -104,8 +104,9 @@ class PhotoLibrary: ObservableObject {
                 switch result {
                 case let .success(image):
                     let id = asset.phAsset.localIdentifier.replacingOccurrences(of: "/", with: "_")
-                    let url = url.appendingPathComponent("\(id).\(type.preferredFilenameExtension!)")
-                    try image.cgImage.write(to: url, type: type)
+                    let url = url.appendingPathComponent("\(id).tiff")
+                    try image.tiffRepresentation!.write(to: url)
+
                     return (asset, Result<URL, Error>.success(url))
                 case let .failure(error):
                     return (asset, Result<URL, Error>.failure(error))

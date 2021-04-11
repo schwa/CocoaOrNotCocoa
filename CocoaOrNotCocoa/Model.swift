@@ -45,7 +45,7 @@ class Model: ObservableObject {
             try container.encode(collections, forKey: .collections)
         }
 
-        let id = LOLID()
+        let id = UUID()
         var asset: PHAsset
         var prediction: Double? = nil
         var collections: [String] = []
