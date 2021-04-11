@@ -27,8 +27,8 @@ struct ContentView: View {
         }
         Button("Export") {
 
-            if !FileManager().fileExists(atPath: "/tmp/Training") {
-                try! FileManager().createDirectory(atPath: "/tmp/Training", withIntermediateDirectories: true, attributes: nil)
+            if !FileManager().fileExists(atPath: "/tmp/TrainingData") {
+                try! FileManager().createDirectory(atPath: "/tmp/TrainingData", withIntermediateDirectories: true, attributes: nil)
             }
 
             let parentProgress = Progress(totalUnitCount: 2)
@@ -61,7 +61,7 @@ struct ContentView: View {
             .store(in: &cancellables)
         }
         Button("Train") {
-            let url = URL(fileURLWithPath: "/Volumes/ramdisk/TrainingData")
+            let url = URL(fileURLWithPath: "/tmp/TrainingData")
             try! trainingModel.training(url: url)
         }
 
