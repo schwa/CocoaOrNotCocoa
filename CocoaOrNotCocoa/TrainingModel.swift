@@ -17,7 +17,7 @@ class TrainingModel: ObservableObject {
 
     func training(url: URL) throws {
         let labels = try FileManager().contentsOfDirectory(atPath: url.path).filter({ $0.first != "." })
-        let urls = labels.map() { label -> (String, [URL]) in
+        let urls = labels.map { label -> (String, [URL]) in
             let url = url.appendingPathComponent(label)
             let fileManager = FileManager()
             let urls = fileManager.enumerator(at: url, includingPropertiesForKeys: [.typeIdentifierKey], options: .skipsSubdirectoryDescendants, errorHandler: nil)!
@@ -33,20 +33,19 @@ class TrainingModel: ObservableObject {
             }
             return (label, urls.shuffled())
         }
-        .map() { label, urls -> (String, [URL], [URL]) in
+        .map { label, urls -> (String, [URL], [URL]) in
             print(urls.count)
             let trainingURLs = Array(urls[..<1000])
             let evaluationURLs = Array(urls[1000..<1200])
             return (label, trainingURLs, evaluationURLs)
         }
 
+// print(urls)
 
-//print(urls)
-
-        let trainingData = MLImageClassifier.DataSource.filesByLabel(Dictionary(uniqueKeysWithValues: urls.map { label, trainingURLs, evaluationURLs in
+        let trainingData = MLImageClassifier.DataSource.filesByLabel(Dictionary(uniqueKeysWithValues: urls.map { label, trainingURLs, _ in
             return (label, trainingURLs)
         }))
-        let evaluationData = MLImageClassifier.DataSource.filesByLabel(Dictionary(uniqueKeysWithValues: urls.map { label, trainingURLs, evaluationURLs in
+        let evaluationData = MLImageClassifier.DataSource.filesByLabel(Dictionary(uniqueKeysWithValues: urls.map { label, _, evaluationURLs in
             return (label, evaluationURLs)
         }))
 
@@ -55,7 +54,7 @@ class TrainingModel: ObservableObject {
         let parameters = MLImageClassifier.ModelParameters(validation: v, maxIterations: 25, augmentation: MLImageClassifier.ImageAugmentationOptions())
 
         let sessionParameters = MLTrainingSessionParameters(
-            sessionDirectory: nil, //URL(fileURLWithPath: "/Volumes/ramdisk/Checkpoints"),
+            sessionDirectory: nil, // URL(fileURLWithPath: "/Volumes/ramdisk/Checkpoints"),
             reportInterval: 5,
             checkpointInterval: 10,
             iterations: 1000
@@ -92,13 +91,8 @@ class TrainingModel: ObservableObject {
 //        let metrics = classifier.evaluation(on: .filesByLabel(evaluationData))
 //        print(metrics)
 
-//MLImageClassifier.train(trainingData: (<#T##[String : [URL]]#>))
-
+// MLImageClassifier.train(trainingData: (<#T##[String : [URL]]#>))
 
     }
 
-
-
 }
-
-

@@ -29,7 +29,7 @@ struct OldContentView: View {
 
     var body: some View {
         HSplitView {
-            VStack() {
+            VStack {
                 browser
                 options
             }
@@ -87,7 +87,7 @@ struct OldContentView: View {
     var options: some View {
         VStack {
             Text("\(model.records.filter({$0.prediction != nil}).count) / \(model.records.count)")
-            HStack() {
+            HStack {
                 Button("Load") {
                     model.load()
                 }
@@ -99,7 +99,7 @@ struct OldContentView: View {
                 }
                 Button("Export") {
 
-                    let data = try! JSONEncoder().encode(model.records.filter() { $0.prediction != nil })
+                    let data = try! JSONEncoder().encode(model.records.filter { $0.prediction != nil })
                     try! data.write(to: URL(fileURLWithPath: "/Users/schwa/Downloads/test.json"))
 
                 }
@@ -141,13 +141,12 @@ struct PhotoAssetView: View {
     var body: some View {
         if let image = image {
             Image(nsImage: image).resizable().scaledToFit()
-        }
-        else {
-            Color.white.onAppear() {
+        } else {
+            Color.white.onAppear {
                 let options = PHImageRequestOptions()
                 options.deliveryMode = .opportunistic
                 options.isNetworkAccessAllowed = false
-                PHImageManager.default().requestImage(for: asset, targetSize: requestSize/*CGSize(width: asset.pixelWidth, height: asset.pixelHeight)*/, contentMode: .aspectFit, options: options) { image, info in
+                PHImageManager.default().requestImage(for: asset, targetSize: requestSize/*CGSize(width: asset.pixelWidth, height: asset.pixelHeight)*/, contentMode: .aspectFit, options: options) { image, _ in
                     self.image = image
                 }
             }

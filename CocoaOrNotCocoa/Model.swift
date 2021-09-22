@@ -13,12 +13,11 @@ import Combine
 import SwiftUI
 import CreateML
 
-
 func assetPublisher(fetch: PHFetchResult<PHAsset>) -> AnyPublisher <PHAsset, Never> {
     let subject = PassthroughSubject<PHAsset, Never>()
     DispatchQueue.global(qos: .default).async {
         // TODO: what about 0 assets
-        fetch.enumerateObjects() { (asset, index, stop) in
+        fetch.enumerateObjects { (asset, index, _) in
             subject.send(asset)
             if index == fetch.count - 1 {
                 subject.send(completion: .finished)
@@ -47,7 +46,7 @@ class Model: ObservableObject {
 
         let id = UUID()
         var asset: PHAsset
-        var prediction: Double? = nil
+        var prediction: Double?
         var collections: [String] = []
     }
 
@@ -61,13 +60,13 @@ class Model: ObservableObject {
 
     var backingRecords: [Record] = []
     var cancellables = Set<AnyCancellable>()
-    let classifier = try! CocoaOrNotCocoa(contentsOf: Bundle.main.url(forResource: "CocoaOrNotCocoa", withExtension:"mlmodelc")!)
+    let classifier = try! CocoaOrNotCocoa(contentsOf: Bundle.main.url(forResource: "CocoaOrNotCocoa", withExtension: "mlmodelc")!)
     var updateSubject = PassthroughSubject<[Record], Never>()
 
     init() {
         updateSubject
             .throttle(for: 0.1, scheduler: DispatchQueue.main, latest: true)
-            .sink() {
+            .sink {
                 self.records = $0
             }
             .store(in: &cancellables)
@@ -77,7 +76,7 @@ class Model: ObservableObject {
         let fetch = PHAsset.fetchAssets(with: .image, options: nil)
         assetPublisher(fetch: fetch)
             .collect()
-            .map() {
+            .map {
                 $0.sorted { $0.localIdentifier < $1.localIdentifier }
                     .map({ Record(asset: $0) })
             }
@@ -92,12 +91,12 @@ class Model: ObservableObject {
     }
 
     func updateCollectios() {
-        PHCollectionList.fetchTopLevelUserCollections(with: nil).enumerateObjects() { collection, _, _ in
+        PHCollectionList.fetchTopLevelUserCollections(with: nil).enumerateObjects { collection, _, _ in
             if collection.localizedTitle!.contains("Cocoa") {
                 let fetch = PHAsset.fetchAssets(in: collection as! PHAssetCollection, options: nil)
                 assetPublisher(fetch: fetch)
                     .collect()
-                    .map() {
+                    .map {
                         $0.map({ $0.localIdentifier })
                     }
                     .receive(on: DispatchQueue.main)
@@ -110,7 +109,6 @@ class Model: ObservableObject {
             }
         }
     }
-
 
     var collectionsForID: [String: PHAssetCollection] = [:]
 
@@ -132,7 +130,7 @@ class Model: ObservableObject {
             let group = DispatchGroup()
             let semaphore = DispatchSemaphore(value: ProcessInfo.processInfo.processorCount * 2)
 
-            self.records.enumerated().forEach() { index, record in
+            self.records.enumerated().forEach { index, record in
 
                 if record.prediction != nil {
                     return
@@ -144,7 +142,7 @@ class Model: ObservableObject {
 
                 semaphore.wait()
                 workerQueue.async(group: group) {
-                    PHImageManager.default().requestImage(for: record.asset, targetSize: CGSize(width: 1080, height: 1080), contentMode: .aspectFill, options: options) { image, info in
+                    PHImageManager.default().requestImage(for: record.asset, targetSize: CGSize(width: 1080, height: 1080), contentMode: .aspectFill, options: options) { image, _ in
                         let input = try! CocoaOrNotCocoaInput(imageWith: image!.cgImage)
                         let prediction = try! self.classifier.prediction(input: input)
                         var record = record
@@ -168,4 +166,3 @@ class Model: ObservableObject {
         self.started = false
     }
 }
-

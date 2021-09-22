@@ -9,7 +9,7 @@ import SwiftUI
 import Photos
 import Combine
 import UniformTypeIdentifiers
-//import Everything
+// import Everything
 
 struct ContentView: View {
 
@@ -20,7 +20,7 @@ struct ContentView: View {
     var trainingModel = TrainingModel()
 
     var body: some View {
-        List() {
+        List {
             ForEach(library.albums) { album in
                 Text("\(album.title) \(album.assets.count)")
             }
@@ -43,7 +43,7 @@ struct ContentView: View {
                 let url = URL(fileURLWithPath: "/tmp/TrainingData/\(title)")
                 try? FileManager().createDirectory(at: url, withIntermediateDirectories: true, attributes: nil)
                 let progress = Progress(totalUnitCount: Int64(album!.assets.count), parent: parentProgress, pendingUnitCount: 1)
-                return album!.export(url: url).handleEvents(receiveRequest:  { _ in
+                return album!.export(url: url).handleEvents(receiveRequest: { _ in
                     print("TICK")
                     progress.completedUnitCount += 1
                 })
@@ -80,7 +80,7 @@ class PhotoLibrary: ObservableObject {
 
         init(phCollection: PHAssetCollection) {
             self.phCollection = phCollection
-            PHAsset.fetchAssets(in: self.phCollection, options: nil).enumerateObjects() { asset, index, stop in
+            PHAsset.fetchAssets(in: self.phCollection, options: nil).enumerateObjects { asset, _, _ in
                 self.assets.append(Asset(album: self, phAsset: asset))
             }
         }
@@ -94,13 +94,13 @@ class PhotoLibrary: ObservableObject {
         func export(url: URL) -> AnyPublisher<(Asset, Result<URL, Error>), Error> {
             print("Assets \(assets.count)")
             return Publishers.Sequence(sequence: assets)
-            .flatMap() { asset -> AnyPublisher<(Asset, Result<NSImage, Error>), Never> in
+            .flatMap { asset -> AnyPublisher<(Asset, Result<NSImage, Error>), Never> in
                 asset.requestImage(size: CGSize(width: 160, height: 160), contentMode: .aspectFit)
                 .result()
                 .map { (asset, $0) }
                 .eraseToAnyPublisher()
             }
-            .tryMap() { (asset, result) -> (Asset, Result<URL, Error>) in
+            .tryMap { (asset, result) -> (Asset, Result<URL, Error>) in
                 switch result {
                 case let .success(image):
                     let id = asset.phAsset.localIdentifier.replacingOccurrences(of: "/", with: "_")
@@ -135,8 +135,7 @@ class PhotoLibrary: ObservableObject {
             let id = PHImageManager.default().requestImage(for: phAsset, targetSize: size, contentMode: contentMode, options: options) { image, info in
                 if let error = info?[PHImageErrorKey] {
                     subject.send(completion: .failure(error as! Error))
-                }
-                else if let image = image {
+                } else if let image = image {
                     subject.send(image)
                     if info?[PHImageResultIsDegradedKey].map({ $0 as! Bool }) == false {
                         subject.send(completion: .finished)
@@ -152,14 +151,13 @@ class PhotoLibrary: ObservableObject {
     }
 
     init() {
-        PHCollectionList.fetchTopLevelUserCollections(with: nil).enumerateObjects() { collection, index, stop in
+        PHCollectionList.fetchTopLevelUserCollections(with: nil).enumerateObjects { collection, _, _ in
             if let collection = collection as? PHAssetCollection {
                 self.albums.append(Album(phCollection: collection))
             }
         }
     }
 }
-
 
 extension Publisher {
     func result() -> AnyPublisher<Result<Output, Failure>, Never> {
